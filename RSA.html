@@ -1,0 +1,138 @@
+<!-- CSC699 RSA INTERACTIVE GAMES -->
+<!-- GROUP 15 
+    MUHAMMAD SUFFIAN BIN ABU BAKAR (2024927475)
+    MUHAMMAD IMAN BIN NAZRI (2024905013)
+    MOHD ALIF ASHRAF BIN ABDUL RAZAK (2024794287)
+
+    GROUP CLASS: CDCS2306C
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RSA Master: Cryptography Mission</title>
+    <link rel="icon" type="image/png" href="assets/icon/logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<!-- audio background -->
+<audio id="bg-music" loop>
+    <source src="assets/music/RSA - Theme Song.mp3" type="audio/mpeg">
+</audio>
+
+<script src="assets/js/main.js"></script>
+
+<div class="game-card">
+    <!-- game navigation -->
+    <div class="top-nav" id="ui-nav">
+        <div>
+            <i class="fas fa-home nav-icon" onclick="resetToMenu()"></i>
+            <span class="audio-toggle" onclick="toggleAudio()">
+                <i id="audio-icon" class="fas fa-volume-mute"></i>
+            </span>
+        </div>
+        <div class="mission-label" id="mission-title">System Ready</div>
+        <div style="width:20px"></div>
+    </div>
+
+    <!-- timer and progress -->
+    <div id="game-progress" class="hidden">
+        <div class="timer-bar"><div id="timer-fill"></div></div>
+        <div class="step-row">
+            <div class="step" id="s1">1</div>
+            <div class="step" id="s2">2</div>
+            <div class="step" id="s3">3</div>
+            <div class="step" id="s4">4</div>
+        </div>
+    </div>
+
+    <!-- screen start - home of the games -->
+    <div id="screen-start" class="fade-in" style="text-align:center; padding: 1rem 0;">
+        <div class="hero-icon">
+            <div style="width: 120px; height: 120px; border-radius: 50%; border: 4px solid var(--primary); padding: 5px; margin: 0 auto;">
+               <img src="assets/icon/logo.png" alt="RSA Icon" style="width:100%; height:100%; object-fit:contain; border-radius: 50%;">
+            </div>
+        </div>
+        <h1>GRAND RSA AUTO</h1>
+        <p style="color: #64748b; font-weight: 500; margin: 1.5rem 0;">Secure The Signal, Master The Encryption.</p>
+        
+        <button class="btn" onclick="askUserNameAndStart()">
+            <i class="fas fa-play"></i> START MISSION
+        </button>
+        
+        <button class="btn btn-outline" style="margin-top: 10px; margin-bottom: 10px;" onclick="showLeaderboard()">
+            <i class="fas fa-trophy"></i> LEADERBOARD
+        </button>
+
+        <div class="footer">
+            <p style="margin-bottom: 12px; font-weight: 600; color: var(--primary);"><i class="fas fa-shield-alt"></i> Group 15 - CSC669 Group Project</p>
+            <p style="margin: 8px 0; font-size: 0.85rem; color: #64748b;">A CSC669 Group Project Assignment - Interactive RSA Game</p>
+            <div style="border-top: 1px solid #e2e8f0; padding-top: 10px; margin-top: 10px;">
+                <p style="margin: 5px 0; font-size: 0.8rem; color: #94a3b8;">© 2026 Suffian Bakar, Alif Ashraf, Iman Nazri (CDCS2306C)</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- game briefing -->
+    <div id="screen-briefing" class="hidden fade-in">
+        <h3 style="display:flex; align-items:center; gap:10px;">
+            <i class="fas fa-user-shield" style="color:var(--primary)"></i> 
+            Mission Briefing
+        </h3>
+        <div class="study-box">
+            <div class="anime-avatar">
+                <img src="assets/icon/Suffian.png" alt="Agent Briefing" style="width:100%; height:100%; object-fit:cover; ">
+            </div>
+            <div>
+                <p style="margin-top:0">Agent <b class="display-user-name"></b>, pay attention. You are tasked with securing a transmission using the <b>RSA algorithm</b>.</p>
+                <ul style="padding-left: 20px; font-size: 0.85rem;">
+                    <li><b>Primes:</b> Pick 2 prime numbers (p & q).</li>
+                    <li><b>Keys:</b> Calculate your public lock and private unlock keys.</li>
+                    <li><b>Encrypt:</b> Scramble your message for safe travel.</li>
+                    <li><b>Decrypt:</b> Use your <b>Private Key (d)</b> to recover the data.</li>
+                </ul>
+            </div>
+        </div>
+        <button class="btn" onclick="showScreen('screen-diff')">UNDERSTOOD</button>
+        <button class="btn btn-outline" onclick="showScreen('screen-start')">ABORT MISSION</button>
+    </div>
+
+    <!-- difficulty -->
+    <div id="screen-diff" class="hidden fade-in" style="text-align:center;">
+        <h3>Encryption Strength</h3>
+        <p style="color:#64748b; margin-bottom:1.5rem;">Select the complexity of the RSA keys.</p>
+        <button class="btn" style="background:var(--success)" onclick="initGame(11, 30, 'ROOKIE')">
+            <i class="fas fa-shield-alt"></i> ROOKIE (Simple)
+        </button>
+        <button class="btn" style="background:var(--warning)" onclick="initGame(31, 70, 'ELITE')">
+            <i class="fas fa-user-secret"></i> ELITE (Advanced)
+        </button>
+        <button class="btn" style="background:var(--danger)" onclick="initGame(71, 150, 'MASTER')">
+            <i class="fas fa-skull-crossbones"></i> MASTER (Maximum)
+        </button>
+    </div>
+
+    <!-- game area -->
+    <div id="game-area" class="hidden">
+        <div id="stage-content" class="fade-in"></div>
+    </div>
+</div>
+
+<!-- modal ui -->
+<div id="custom-modal" class="modal-overlay hidden">
+    <div class="modal-box">
+        <i id="modal-icon" style="font-size: 3.5rem; margin-bottom: 1rem; display: block;"></i>
+        <h2 id="modal-title" style="margin:0; font-weight:800;"></h2>
+        <div id="modal-message" style="color: #64748b; font-weight: 500; margin: 10px 0 20px 0;"></div>
+        <div id="modal-input-area" class="hidden">
+            <input type="text" id="modal-field" placeholder="Codename">
+        </div>
+        <button class="btn" id="modal-btn">ACKNOWLEDGE</button>
+    </div>
+</div>
+
+</body>
+</html>
