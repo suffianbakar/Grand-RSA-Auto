@@ -21,10 +21,12 @@
     function soundClick() { 
         playNote(600, 'sine', 0.1); 
     }
+
     function soundSuccess() { 
         playNote(500, 'square', 0.1); 
         setTimeout(() => playNote(800, 'square', 0.3), 100);
     }
+
     function soundError() { 
         playNote(150, 'sawtooth', 0.4, 0.2); 
     }
@@ -44,11 +46,15 @@
         soundClick();
     }
 
-    // Global Variables
-    let p_val, q_val, n_val, phi_val, e_current, d_current, text_orig = "", cipher_data = [], time_left = 60, game_timer, primes_picked = [];
+    // Global Variables - main function for the game
+    let p_val, q_val, n_val, phi_val, 
+        e_current, d_current, text_orig = "", 
+        cipher_data = [], time_left = 60, 
+        game_timer, primes_picked = [];
     let current_user_name = "Agent_Guest";
     let agent_leaderboard = JSON.parse(localStorage.getItem('rsa_scores')) || [];
 
+    // avatar image of the character in this games - explanation to the user
     const animeAvatarSvg = `
         <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
             <rect width="100" height="100" fill="#6366f1" opacity="0.1"/>
@@ -61,14 +67,18 @@
         </svg>
     `;
 
+    // prime number check - determine selection made by user are prime number or not
     function isPrimeNum(num) {
         if (num <= 1) return false;
         for(let i=2; i<=Math.sqrt(num); i++) if(num%i===0) return false;
         return true;
     }
 
-    function calculateGcd(a, b) { return b ? calculateGcd(b, a % b) : a; }
+    function calculateGcd(a, b) { 
+        return b ? calculateGcd(b, a % b) : a; 
+    }
     
+    // modular inverse - extended euclidean
     function findModInverse(e, phi) {
         let m0 = phi, t, q, x0 = 0, x1 = 1;
         if (phi == 1) return 0;
@@ -82,9 +92,15 @@
         return x1;
     }
 
+    // encryption and decryption process
     function calculatePowerMod(base, exp, mod) {
         let res = 1n; base = BigInt(base) % BigInt(mod);
-        while (exp > 0n) { if (exp % 2n == 1n) res = (res * base) % BigInt(mod); base = (base * base) % BigInt(mod); exp = exp / 2n; }
+        while (exp > 0n) { 
+            if (exp % 2n == 1n) 
+                res = (res * base) % BigInt(mod); 
+            base = (base * base) % BigInt(mod); 
+            exp = exp / 2n; 
+        }
         return res;
     }
 
@@ -102,11 +118,13 @@
         }
     }
 
+    // update user display if any action
     function updateUserDisplay() {
         const displays = document.querySelectorAll('.display-user-name');
         displays.forEach(d => d.innerText = current_user_name);
     }
 
+    // ask user name
     function askUserNameAndStart() {
         if (audioCtx.state === 'suspended') audioCtx.resume();
         if (!isAudioOn) toggleAudio();
@@ -164,6 +182,7 @@
         };
     }
 
+    // timer for user to think solve problem
     function startTimer() {
         time_left = 120;
         document.getElementById('timer-fill').style.width = "100%";
@@ -185,6 +204,7 @@
         stage1(min, max);
     }
 
+    // prime number challenges (stage 1)
     function stage1(min, max) {
         primes_picked = [];
         let primes = [], nonPrimes = [];
@@ -231,6 +251,7 @@
         }
     }
 
+    // public exponent selection (stage 2)
     function stage2() {
         soundClick();
         document.getElementById('s1').className = "step done";
@@ -272,6 +293,7 @@
             <button class="btn" onclick="stage3()">LOCK MESSAGE</button>`;
     }
 
+    // encryption challenge (stage 3)
     function stage3() {
         soundClick();
         document.getElementById('s2').className = "step done";
@@ -301,6 +323,7 @@
             <button class="btn" onclick="stage4()">FINAL DECRYPTION</button>`;
     }
 
+    // message and decryption process (stage 4)
     function stage4() {
         soundClick();
         document.getElementById('s3').className = "step done";
